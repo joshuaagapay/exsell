@@ -1,0 +1,67 @@
+<div class = "container newbody">
+     <button class="waves-effect waves-light btn modal-trigger" data-target="add-subcategory">
+        ADD SUB CATEGORY
+     </button>
+
+
+
+    <!-- ADD MODAL SUB CATEGORY -->
+    <div class = "modal" id = "add-subcategory">
+        <div class = "right-align">
+            <span class = "modal-close btn-flat"><i class = "material-icons">clear</i></span>
+        </div>
+        <div class = "modal-content">
+            <form id = "add-subcategory-form">                
+                <div class="input-field  col s12">
+                    <select id="select-category" name="category" style="display: block">
+                        <option value = "" disabled selected>Choose Category</option>
+                    </select>
+                </div>
+                <div class = "input-field">
+                    <input id = "subcategory-name" name="subcategory_name" type = "text" class = "validate">
+                    <label for ="subcategory-name">Sub Category Name</label>
+                </div>
+
+                <button class = "modal-close wave-effect wave-green btn right" >ADD</button>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- UPDATE MODAL SUB CATEGORY -->
+    <div class = "modal" id = "update-subcategory">
+        <div class = "right-align">
+            <span class = "modal-close btn-flat"><i class = "material-icons">clear</i></span>
+        </div>
+        <div class = "modal-content">
+            <form id = "update-subcategory-form">
+                <div class="input-field  col s12">
+                    <select id="update-select-category" name="updateCategory" style="display: block">
+                    </select>
+                </div>
+                <div class = "input-field">
+                    <input id = "update-subcategory-name" name="update_subcategory_name" type = "text" class = "validate" autofocus>
+                    <label for ="update-subcategory-name">Sub Category Name</label>
+                </div>
+
+                <button class = "modal-close wave-effect wave-green btn right" >Update</button>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+    
+    <table class = "highlight centered" id = "table-subCategory-list" style = "margin-top:50px;">
+        <thead>
+            <tr>
+                <th>CATEGORY NAME</th>
+                <th>SUB CATEGORY NAME</th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+
+        <tbody id="subcategory-tbody">
+
+        </tbody>
+     </table>
+
+</div>

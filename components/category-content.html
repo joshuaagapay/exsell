@@ -1,0 +1,52 @@
+<div class = "container newbody">
+    <a class="waves-effect waves-light btn modal-trigger" href="#addcategory"><i class = "material-icons left">add</i>ADD CATEGORY</a>
+    <!-- ADD MODAL CATEGORY -->
+    <div class="modal" id="addcategory">
+        <div class = "right-align">
+            <span class = "modal-close btn-flat"><i class = "material-icons">clear</i></span>
+        </div>
+        <div class="modal-content">
+            <form id="addCategory">
+                <div class="input-field">
+                    <input name="category_name" id="category_name" type="text" class="validate">
+                    <label for="category_name">Category Name</label>
+                </div>
+                <div class="input-field">
+                    <input name="category_image" id="category_image" type="file" class="validate">
+                </div>
+                <button class = "modal-close wave-effect wave-green btn right" >ADD</button>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+    <!-- UPDATE MODAL CATEGORY -->
+    <div class = "modal" id = "updatecategory">
+        <div class = "right-align">
+            <span class = "modal-close btn-flat"><i class = "material-icons">clear</i></span>
+        </div>
+        <div class = "modal-content">
+            <form id="update-category-form">
+                <div class="input-field">
+                    <input id="categoryName" name="categoryName" type = "text" class = "validate">
+                    <label for ="category-name">Category Name</label>
+                </div>
+                <div class="input-field">
+                    <input name="category_image" id="category_image_update" type="file" class="validate">
+                </div>
+                <button class = "modal-close wave-effect wave-green btn right" >UPDATE</button>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+    <table class = "highlight centered" id="table-category-list" style = "margin-top:50px;">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>CATEGORY NAME</th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+        <tbody id="tbody-category">
+        </tbody>
+    </table>
+</div>
