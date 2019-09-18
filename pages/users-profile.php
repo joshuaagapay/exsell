@@ -30,9 +30,9 @@
                 $('.modal').modal();
             });
 						
-						const remnantTable = document.querySelector('#tbody-remnants');
+            const remnantTable = document.querySelector('#tbody-remnants');
 						const remModal = document.querySelector('#remModal');
-            const buyModal = document.querySelector('#buyModal');  
+            const buyModal = document.querySelector('#buyModal');
             const sellModal = document.querySelector('#sellModal');
             const bidModal = document.querySelector('#bidModal');
             const userProfile = document.querySelector('#user-profile');
@@ -67,6 +67,7 @@
             // Render data to tr elements
             let renderElement = (doc) => {
                 
+                $(userProfile).empty();
                 $(userProfile).append(`
                       <div class="user-profile-details" style="width: 34%; position: relative; left: 30%; top: 10px">
                           <div class ="row">
@@ -318,3 +319,6 @@
         </script>
     </body>
 </html>
+
+
+
