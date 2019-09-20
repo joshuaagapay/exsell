@@ -27,31 +27,31 @@
             const userTable = document.querySelector('#tbody-users');
             const addForm = document.querySelector('#addUserForm');
             const updateForm = document.querySelector('#updateUserForm');
+            let usersFee;
             // Loading all data
-            database.collection('generateReport').onSnapshot(snapshot => {
-                let changes = snapshot.docChanges();
+            database.collection('generateReport').orderBy('type').onSnapshot(snapshot => {
                 
-                changes.forEach(change => {
-                    
-                    if (change.type == "added") {
-                        renderElement(change.doc);
+                let reportList;
+                snapshot.forEach(doc => {     
+                  if(doc.data().type == 'cartFee')
+                    usersFee = doc.data().transactionFee;
+                  else
+                    usersFee = doc.data().boostingFee;
                         
-                        
-                    }else if (change.type === "modified") {
-                           
-                    }
+
+                  reportList += `<tr data-id="${doc.id}">
+											              <td class="user-status${doc.id}">${doc.data().type}</td>
+                                    <td class="user-name${doc.id}" >₱${usersFee}.0</td>
+                                  </tr>`;
+                      
                 })
+                renderElement(reportList);
             });
 
             // Render data to tr elements
-            let renderElement = (doc) => {
-                
-                $(userTable).append(`
-                    <tr data-id="${doc.id}">
-											<td class="user-status${doc.id}">${doc.data().type}</td>
-                      <td class="user-name${doc.id}" >₱${doc.data().transactionFee}.0</td>
-                    </tr>
-                `);
+            let renderElement = (list) => {
+                $(userTable).empty();
+                $(userTable).append(list);
             }
 
 						var xport = {
