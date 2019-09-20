@@ -28,7 +28,7 @@
             const addForm = document.querySelector('#addUserForm');
             const updateForm = document.querySelector('#updateUserForm');
             // Loading all data
-            database.collection('generateReport').where('type', '==', 'cartFee').onSnapshot(snapshot => {
+            database.collection('generateReport').onSnapshot(snapshot => {
                 let changes = snapshot.docChanges();
                 
                 changes.forEach(change => {

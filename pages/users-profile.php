@@ -56,11 +56,21 @@
                 
             });
 
-            database.collection('remnants').where('userId', '==', id).get().then(snapshot => {
+            database.collection('remnants').where('userId', '==', id).onSnapshot(snapshot => {
+              let remnantsList;
               snapshot.docs.forEach(doc => {
                 
-                renderRemnants(doc);
+                remnantsList += `<tr data-id="${doc.id}">
+										              <td class="user-image${doc.id}"><img width="50" height="50" src="${doc.data().imageUrl[0]}" /></td>
+										              <td class="user-name${doc.id}">${doc.data().title}</td>
+										              <td>
+											              <a data-target="remModal" class="modal-trigger btn primary" onclick="remnantsToModal('${doc.id}')">
+												              <i class="material-icons">search</i>
+											              </a>
+										              </td>
+									              </tr>`
               })
+              renderRemnants(remnantsList);
               
             });
 
@@ -75,7 +85,7 @@
                                 <img class="responsive-img" style="height: 304%; width: 304%" src="${doc.data().imageUrl}" /><br>
                               </div>
                               <div class="col m12">
-                                <p style="margin: 0; text-align: center; font-size: 25px"><strong>${doc.data().firstName} &nbsp; ${doc.data().lastName}</strong></p></br>
+                                <p style="margin: 0; text-align: center; font-size: 25px"><strong>${doc.data().firstName}&nbsp;${doc.data().lastName}</strong></p></br>
                                 <div class="divider"></div>
                               </div>  
                               <div class="col m6" style="margin: 0">
@@ -117,25 +127,15 @@
                 `);
             }
 
-            let renderRemnants = (doc) => {
-                  $(remnantTable).append(`
-									<tr data-id="${doc.id}">
-										<td class="user-image${doc.id}"><img width="50" height="50" src="${doc.data().imageUrl[0]}" /></td>
-										<td class="user-name${doc.id}">${doc.data().title}</td>
-										<td>
-											<a data-target="remModal" class="modal-trigger btn primary" onclick="remnantsToModal('${doc.id}')">
-												<i class="material-icons">search</i>
-											</a>
-										</td>
-									</tr>
-                  `);
+            let renderRemnants = (remnants) => {
+                  $(remnantTable).empty();
+                  $(remnantTable).append(remnants);
 								}
 						
 						let remnantsToModal = (id) => {
 							
-							database.collection('remnants').doc(id).get().then(snapshot => {
+							database.collection('remnants').doc(id).onSnapshot(snapshot => {
 								$(remModal).empty();
-
 								$(remModal).append(` 
                 	<div class="modal-content">
 										<h4>User Remnants Details</h4>
@@ -253,23 +253,24 @@
                 `);
             }
 
+            
+
             //render data to Bidding History Modal
-            let renderToBidModal = (id) => {
+            let renderToBidModal = async (id) => {
+              let bidAmount;
+              let timeStamp;
+              let bidderFname;
+              let bidderLname;
+              let remnantName;
+
 							$('#tbody-bid').empty();
 							$(bidModal).empty();
-
-							database.collection('notification').where('receiver_id', '==', id).get().then(snapshot => {
-								snapshot.docs.forEach(doc => {
-									if(doc.data().notificationType == 'bidder'){
-										$('#tbody-bid').append(`
-											<tr data-id="${doc.id}">
-												<td class="notif-name${doc.id}">${doc.data().message}</td>
-												<td class="notif-name${doc.id}">${doc.data().timeStamp.toDate()}</td>
-											</tr>
-										`);
-									}
-								})
-							});
+          
+							let remRef = await database.collection('remnants').where('userId', '==', id).get();
+              for(remnants of remRef.docs){
+                console.log(remnants.id);
+                // let bidRef = await database.collection('remnants').doc(doc.id).collection('bidders').onSnapshot();
+              }
 
               $(bidModal).append(` 
                 <div class="modal-content">
@@ -277,8 +278,10 @@
                   <table class = "highlight centered" id="table-bidder-list" style = "margin-top:50px;">
 										<thead>
 											<tr>
-												<th>DETAILS</th>
-												<th>DATE</th>
+												<th>BIDDER NAME</th>
+												<th>AMOUNT</th>
+                        <th>REMNANT NAME</th>
+                        <th>DATE</th>
 											</tr>
 										</thead>
 										<tbody id="tbody-bid">
