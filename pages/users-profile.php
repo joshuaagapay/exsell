@@ -262,15 +262,36 @@
               let bidderFname;
               let bidderLname;
               let remnantName;
+              let userId;
 
 							$('#tbody-bid').empty();
 							$(bidModal).empty();
-          
-							let remRef = await database.collection('remnants').where('userId', '==', id).get();
-              for(remnants of remRef.docs){
-                console.log(remnants.id);
-                // let bidRef = await database.collection('remnants').doc(doc.id).collection('bidders').onSnapshot();
-              }
+             
+              database.collection('remnants').where('userId', '==', id).onSnapshot(snapshot => {
+                snapshot.docs.forEach(doc => {
+                  remnantName = doc.data().title;
+                  database.collection('remnants').doc(doc.id).collection('bidders').onSnapshot(snapshot => {
+                    snapshot.docs.forEach(doc => {
+                      bidAmount = doc.data().bidAmount;
+                      timeStamp = doc.data().timeStamp.toDate();
+                      userId = doc.data().userId;
+                      
+                      database.collection('users').doc(userId).onSnapshot(snapshot => {
+                        console.log(snapshot.data().firstName);
+                        	$('#tbody-bid').append(`
+											      <tr data-id="${doc.id}">
+												      <td class="notif-name${doc.id}">${snapshot.data().firstName}&nbsp;${snapshot.data().lastName}</td>
+												      <td class="notif-name${doc.id}">${bidAmount}</td>
+                              <td class="notif-name${doc.id}">${remnantName}</td>
+												      <td class="notif-name${doc.id}">${timeStamp}</td>
+											      </tr>
+										      `);
+
+                      })
+                    })
+                  })
+                })
+              })
 
               $(bidModal).append(` 
                 <div class="modal-content">
