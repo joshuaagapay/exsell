@@ -175,7 +175,7 @@
 							$('#tbody-buy').empty();
 							$(buyModal).empty();
 
-							database.collection('users').doc(id).collection('orders').onSnapshot(snapshot => {
+							database.collection('users').doc(id).collection('orders').get().then(snapshot => {
 								snapshot.docs.forEach(doc => {
 									
                   let remnantID = doc.data().remnantId;
@@ -225,7 +225,7 @@
               $('#tbody-sell').empty();
 							$(sellModal).empty();
 
-                database.collection('remnants').where('userId', '==', id).onSnapshot(snapshot => {
+                database.collection('remnants').where('userId', '==', id).get().then(snapshot => {
                   snapshot.docs.forEach(doc => {
                     if(doc.data().type == 'Fixed Price'){
                       console.log(doc.data().title)
@@ -266,39 +266,49 @@
             
 
             //render data to Bidding History Modal
-            let renderToBidModal = async (id) => {
-              let bidAmount;
-              let timeStamp;
-              let bidderFname;
-              let bidderLname;
-              let remnantName;
-              let userId;
+            let renderToBidModal = (id) => {
+        
 
 							$('#tbody-bid').empty();
 							$(bidModal).empty();
              
-              database.collection('remnants').where('userId', '==', id).onSnapshot(snapshot => {
+              // database.collection('remnants').where('userId', '==', id).onSnapshot(snapshot => {
+              //   snapshot.docs.forEach(doc => {
+              //     remnantName = doc.data().title;
+              //     database.collection('remnants').doc(doc.id).collection('bidders').onSnapshot(snapshot => {
+              //       snapshot.docs.forEach(doc => {
+              //         bidAmount = doc.data().bidAmount;
+              //         timeStamp = doc.data().timeStamp.toDate;
+              //         userId = doc.data().userId;
+              //         console.log(bidAmount);
+              //         database.collection('users').doc(userId).onSnapshot(snapshot => {
+              //           console.log(snapshot.data().firstName);
+              //           	$('#tbody-bid').append(`
+							// 				      <tr data-id="${doc.id}">
+							// 					      <td class="notif-name${doc.id}">${snapshot.data().firstName}&nbsp;${snapshot.data().lastName}</td>
+							// 					      <td class="notif-name${doc.id}">${bidAmount}</td>
+              //                 <td class="notif-name${doc.id}">${remnantName}</td>
+							// 					      <td class="notif-name${doc.id}">${timeStamp}</td>
+							// 				      </tr>
+							// 			      `);
+              //         })
+              //       })
+              //     })
+              //   })
+              // })
+
+              database.collection('bidders').where('userId', '==', id).get().then(snapshot => {
                 snapshot.docs.forEach(doc => {
-                  remnantName = doc.data().title;
-                  database.collection('remnants').doc(doc.id).collection('bidders').onSnapshot(snapshot => {
-                    snapshot.docs.forEach(doc => {
-                      bidAmount = doc.data().bidAmount;
-                      timeStamp = doc.data().timeStamp.toDate;
-                      userId = doc.data().userId;
-                      console.log(bidAmount);
-                      database.collection('users').doc(userId).onSnapshot(snapshot => {
-                        console.log(snapshot.data().firstName);
-                        	$('#tbody-bid').append(`
+                  let bidAmount = doc.data().bidAmount;
+                  let remnantId = doc.data().remnantId;
+                  let timeStamp = doc.data().timeStamp;
+                  $('#tbody-bid').append(`
 											      <tr data-id="${doc.id}">
-												      <td class="notif-name${doc.id}">${snapshot.data().firstName}&nbsp;${snapshot.data().lastName}</td>
-												      <td class="notif-name${doc.id}">${bidAmount}</td>
-                              <td class="notif-name${doc.id}">${remnantName}</td>
-												      <td class="notif-name${doc.id}">${timeStamp}</td>
+												      <td class="notif-name${doc.id}">${remnantId}</td>
+                              <td class="notif-name${doc.id}">${bidAmount}php</td>
+                              <td class="notif-name${doc.id}">${timeStamp.toDate()}</td>
 											      </tr>
-										      `);
-                      })
-                    })
-                  })
+										    `);
                 })
               })
 
@@ -308,9 +318,8 @@
                   <table class = "highlight centered" id="table-bidder-list" style = "margin-top:50px;">
 										<thead>
 											<tr>
-												<th>BIDDER NAME</th>
-												<th>AMOUNT</th>
-                        <th>REMNANT NAME</th>
+                        <th>REMNANT ID</th>
+                        <th>BID AMOUNT</th>
                         <th>DATE</th>
 											</tr>
 										</thead>
