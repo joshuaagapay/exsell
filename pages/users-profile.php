@@ -178,18 +178,22 @@
 							database.collection('users').doc(id).collection('orders').onSnapshot(snapshot => {
 								snapshot.docs.forEach(doc => {
 									
-                  let ownerId = doc.data().ownerId;
-                  database.collection('users').doc(ownerId).onSnapshot(snapshot => {
-                    console.log(snapshot.data().firstName);
-                  })
-									// if(doc.data().notificationType == 'buyer'){
-									// 	$('#tbody-buy').append(`
-									// 		<tr data-id="${doc.id}">
-									// 			<td class="notif-name${doc.id}">${doc.data().message}</td>
-									// 			<td class="notif-name${doc.id}">${doc.data().timeStamp.toDate()}</td>
-									// 		</tr>
-									// 	`);
-									// }
+                  let remnantID = doc.data().remnantId;
+                  let subTotal = doc.data().subTotal;
+                  let timeStamp = doc.data().timeStamp;
+                  let quantity = doc.data().quantity;
+                  console.log(doc);
+                    
+										  $('#tbody-buy').append(`
+											  <tr data-id="${doc.id}">
+												  <td class="notif-name${doc.id}">${remnantID}</td>
+												  <td class="notif-name${doc.id}">${quantity}</td>
+                          <td class="notif-name${doc.id}">${subTotal}</td>
+												  <td class="notif-name${doc.id}">${timeStamp.toDate()}</td>
+											  </tr>
+										  `);
+									  
+                  
 								})
                 
 							});
@@ -200,8 +204,10 @@
                   <table class = "highlight centered" id="table-buyer-list" style = "margin-top:50px;">
 										<thead>
 											<tr>
-												<th>DETAILS</th>
-												<th>DATE</th>
+												<th>REMNANT ID</th>
+												<th>QUANTITY</th>
+                        <th>SUB TOTAL</th>
+                        <th>DATE</th>
 											</tr>
 										</thead>
 										<tbody id="tbody-buy">
@@ -215,23 +221,25 @@
             }
             
             //render data to Selling History Modal
-            let renderToSellModal = () => {
+            let renderToSellModal = (id) => {
               $('#tbody-sell').empty();
 							$(sellModal).empty();
 
-							// database.collection('notification').where('receiver_id', '==', id).get().then(snapshot => {
-							// 	snapshot.docs.forEach(doc => {
-							// 		console.log(doc.data());
-							// 		if(doc.data().notificationType == 'seller'){
-							// 			$('#tbody-sell').append(`
-							// 				<tr data-id="${doc.id}">
-							// 					<td class="notif-name${doc.id}">${doc.data().message}</td>
-							// 					<td class="notif-name${doc.id}">${doc.data().timeStamp.toDate()}</td>
-							// 				</tr>
-							// 			`);
-							// 		}
-							// 	})
-							// });
+                database.collection('remnants').where('userId', '==', id).onSnapshot(snapshot => {
+                  snapshot.docs.forEach(doc => {
+                    if(doc.data().type == 'Fixed Price'){
+                      console.log(doc.data().title)
+                        $('#tbody-sell').append(`
+											      <tr data-id="${doc.id}">
+												      <td class="notif-name${doc.id}">${doc.data().title}</td>
+												      <td class="notif-name${doc.id}">${doc.data().description}</td>
+                              <td class="notif-name${doc.id}">${doc.data().price}php</td>
+                              <td class="notif-name${doc.id}">${doc.data().timeStamp.toDate()}</td>
+											      </tr>
+										    `);
+                    }
+                  })
+                })
 
               $(sellModal).append(` 
                 <div class="modal-content">
@@ -239,7 +247,9 @@
                   <table class = "highlight centered" id="table-seller-list" style = "margin-top:50px;">
 										<thead>
 											<tr>
-												<th>DETAILS</th>
+                        <th>REMNANT NAME</th>
+                        <th>DESCRIPTION</th>
+												<th>PRICE</th>
 												<th>DATE</th>
 											</tr>
 										</thead>
@@ -273,9 +283,9 @@
                   database.collection('remnants').doc(doc.id).collection('bidders').onSnapshot(snapshot => {
                     snapshot.docs.forEach(doc => {
                       bidAmount = doc.data().bidAmount;
-                      timeStamp = doc.data().timeStamp.toDate();
+                      timeStamp = doc.data().timeStamp.toDate;
                       userId = doc.data().userId;
-                      
+                      console.log(bidAmount);
                       database.collection('users').doc(userId).onSnapshot(snapshot => {
                         console.log(snapshot.data().firstName);
                         	$('#tbody-bid').append(`
@@ -286,7 +296,6 @@
 												      <td class="notif-name${doc.id}">${timeStamp}</td>
 											      </tr>
 										      `);
-
                       })
                     })
                   })

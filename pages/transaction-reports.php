@@ -28,30 +28,51 @@
             const addForm = document.querySelector('#addUserForm');
             const updateForm = document.querySelector('#updateUserForm');
             let usersFee;
+            
             // Loading all data
-            database.collection('generateReport').orderBy('type').onSnapshot(snapshot => {
+            // database.collection('generateReport').orderBy('type').onSnapshot(snapshot => {               
+            //     let reportList;
+            //     let users;
+            //     snapshot.forEach(async doc => {     
+            //       if(doc.data().type == 'cartFee')
+            //         usersFee = doc.data().transactionFee;
+            //       else
+            //         usersFee = doc.data().boostingFee;
+                  
+
+
+              database.collection('generateReport').get().then(snapshot => {
                 
-                let reportList;
-                snapshot.forEach(doc => {     
+                snapshot.docs.forEach(doc => {
+                  
+                  let user_id = doc.data().senderUser_id;
+                  let  ttype = doc.data().type;
                   if(doc.data().type == 'cartFee')
                     usersFee = doc.data().transactionFee;
                   else
                     usersFee = doc.data().boostingFee;
-                        
 
-                  reportList += `<tr data-id="${doc.id}">
-											              <td class="user-status${doc.id}">${doc.data().type}</td>
-                                    <td class="user-name${doc.id}" >₱${usersFee}.0</td>
-                                  </tr>`;
-                      
-                })
-                renderElement(reportList);
-            });
+                    database.collection('users').doc(user_id).get().then(snapshot => {
+                      let ttable =`
+											      <tr data-id="${doc.id}">
+												      <td class="notif-name${doc.id}">${snapshot.data().firstName}&nbsp${snapshot.data().lastName}</td>
+                              <td class="notif-name${doc.id}">${ttype}</td>
+                              <td class="notif-name${doc.id}">${usersFee}php</td>
+											      </tr>`
+
+                      renderElement(ttable);
+                   
+                    });
+            
+                });
+              
+              });
+            
 
             // Render data to tr elements
-            let renderElement = (list) => {
-                $(userTable).empty();
-                $(userTable).append(list);
+            let renderElement = (tables) => {
+                
+                $(userTable).append(tables);
             }
 
 						var xport = {
