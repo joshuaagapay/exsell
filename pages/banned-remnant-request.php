@@ -24,21 +24,21 @@
         <?php include '../components/footer.html'; ?>
 
         <script type="text/javascript">
-            const userTable = document.querySelector('#tbody-users');
+            const userTable = document.querySelector('#tbody-remnants');
             const addForm = document.querySelector('#addUserForm');
             const updateForm = document.querySelector('#updateUserForm');
             let bannedStatus;
             let bannedText;
             let banElement;
             // Loading all data
-            database.collection('remnants').where('report', '==', 5).onSnapshot(snapshot => {
+            database.collection('remnants').where('report', '>=', 5).onSnapshot(snapshot => {
                 let changes = snapshot.docChanges();
                 
                 changes.forEach(change => {
                     
                     if (change.type == "added") {
                         
-                        if(change.doc.data().report == 5 && !change.doc.data().isBanned){
+                        if(change.doc.data().report >= 5 && !change.doc.data().isBanned){
                             console.log(change.doc.data());
                             if (!change.doc.data().isBanned) {
                                 bannedText = 'Not Banned';          
@@ -54,7 +54,7 @@
                             if(change.doc.data().isBanned){
                                 let tr = userTable.querySelector('[data-id=' + change.doc.id + ']');
                                 userTable.removeChild(tr);
-                            }else if(change.doc.data().report == 5 && !change.doc.data().isBanned){
+                            }else if(change.doc.data().report >= 5 && !change.doc.data().isBanned){
                                 if (!change.doc.data().isBanned) {
                                     bannedText = 'Not Banned';          
                                 }
@@ -71,10 +71,11 @@
             // Render data to tr elements
             let renderElement = (doc) => {
                 
+                $(userTable).empty();
                 $(userTable).append(`
                     <tr data-id="${doc.id}">
                         <td class="user-image${doc.id}"><img width="50" height="50" src="${doc.data().imageUrl}" /></td>
-                        <td class="user-name${doc.id}" >${doc.data().title}}</td>
+                        <td class="user-name${doc.id}" >${doc.data().title}</td>
                         <td class="user-status${doc.id}">${doc.data().status}</td>
                         <td class="user-banned${doc.id}">${bannedText}</td>
                         <td>

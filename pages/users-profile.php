@@ -171,22 +171,26 @@
 
 
             //render data to Buying History Modal
-            let renderToBuyModal = (id) => {
+            let renderToBuyModal = async (id) => {
 							$('#tbody-buy').empty();
 							$(buyModal).empty();
 
 							database.collection('users').doc(id).collection('orders').get().then(snapshot => {
-								snapshot.docs.forEach(doc => {
+								snapshot.docs.forEach(async doc => {
 									
                   let remnantID = doc.data().remnantId;
+                  
+                  let remRef = await database.collection('remnants').doc(remnantID).get().then();
+                  console.log(remRef.data());
                   let subTotal = doc.data().subTotal;
                   let timeStamp = doc.data().timeStamp;
                   let quantity = doc.data().quantity;
+
                   console.log(doc);
                     
 										  $('#tbody-buy').append(`
 											  <tr data-id="${doc.id}">
-												  <td class="notif-name${doc.id}">${remnantID}</td>
+												  <td class="notif-name${doc.id}">${remRef.data().title}</td>
 												  <td class="notif-name${doc.id}">${quantity}</td>
                           <td class="notif-name${doc.id}">${subTotal}</td>
 												  <td class="notif-name${doc.id}">${timeStamp.toDate()}</td>
@@ -204,7 +208,7 @@
                   <table class = "highlight centered" id="table-buyer-list" style = "margin-top:50px;">
 										<thead>
 											<tr>
-												<th>REMNANT ID</th>
+												<th>REMNANT NAME</th>
 												<th>QUANTITY</th>
                         <th>SUB TOTAL</th>
                         <th>DATE</th>
@@ -266,7 +270,7 @@
             
 
             //render data to Bidding History Modal
-            let renderToBidModal = (id) => {
+            let renderToBidModal = async (id) => {
         
 
 							$('#tbody-bid').empty();
@@ -298,13 +302,25 @@
               // })
 
               database.collection('bidders').where('userId', '==', id).get().then(snapshot => {
-                snapshot.docs.forEach(doc => {
+                snapshot.docs.forEach(async doc => {
+
+                  let remID = doc.data().remnantId;
                   let bidAmount = doc.data().bidAmount;
-                  let remnantId = doc.data().remnantId;
                   let timeStamp = doc.data().timeStamp;
+
+                  let remRef = await database.collection('remnants').doc(remID).get();
+                  
+                  let ownerID = remRef.data().userId;
+                
+
+                  let userRef = await database.collection('users').doc(ownerID).get();
+
+                  let ownerName = userRef.data().firstName +' '+ userRef.data().lastName;
+                
                   $('#tbody-bid').append(`
 											      <tr data-id="${doc.id}">
-												      <td class="notif-name${doc.id}">${remnantId}</td>
+                              <td class="notif-name${doc.id}">${ownerName}</td>
+												      <td class="notif-name${doc.id}">${remRef.data().title}</td>
                               <td class="notif-name${doc.id}">${bidAmount}php</td>
                               <td class="notif-name${doc.id}">${timeStamp.toDate()}</td>
 											      </tr>
@@ -318,7 +334,8 @@
                   <table class = "highlight centered" id="table-bidder-list" style = "margin-top:50px;">
 										<thead>
 											<tr>
-                        <th>REMNANT ID</th>
+                        <th>REMNANT OWNER</th>
+                        <th>REMNANT NAME</th>
                         <th>BID AMOUNT</th>
                         <th>DATE</th>
 											</tr>

@@ -40,33 +40,40 @@
             //         usersFee = doc.data().boostingFee;
                   
 
-
-              database.collection('generateReport').get().then(snapshot => {
+              async function process_reports(){
+                let repRef = await database.collection('generateReport').get().then();
                 
-                snapshot.docs.forEach(doc => {
+                  repRef.docs.forEach(async doc => {
                   
-                  let user_id = doc.data().senderUser_id;
-                  let  ttype = doc.data().type;
-                  if(doc.data().type == 'cartFee')
-                    usersFee = doc.data().transactionFee;
-                  else
-                    usersFee = doc.data().boostingFee;
+                    let user_id = doc.data().senderUser_id;
 
-                    database.collection('users').doc(user_id).get().then(snapshot => {
+    
+                    let userRef = await database.collection('users').doc(user_id).get();
+
+                    let  ttype = doc.data().type;
+                    if(doc.data().type == 'cartFee')
+                      usersFee = doc.data().transactionFee;
+                    else
+                      usersFee = doc.data().boostingFee;
+                      
+                    
                       let ttable =`
-											      <tr data-id="${doc.id}">
-												      <td class="notif-name${doc.id}">${snapshot.data().firstName}&nbsp${snapshot.data().lastName}</td>
-                              <td class="notif-name${doc.id}">${ttype}</td>
-                              <td class="notif-name${doc.id}">${usersFee}php</td>
-											      </tr>`
-
+											        <tr data-id="${doc.id}">
+												        <td class="notif-name${doc.id}">${userRef.data().firstName}&nbsp${userRef.data().lastName}</td>
+                                <td class="notif-name${doc.id}">${ttype}</td>
+                                <td class="notif-name${doc.id}">${usersFee}php</td>
+											        </tr>`
                       renderElement(ttable);
-                   
-                    });
+                    
             
+                    
+                    
                 });
+
+              }
+
+              process_reports();
               
-              });
             
 
             // Render data to tr elements

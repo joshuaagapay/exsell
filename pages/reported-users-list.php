@@ -71,6 +71,7 @@
             // Render data to tr elements
             let renderElement = (doc) => {
                 
+                $(userTable).empty();
                 $(userTable).append(`
                     <tr data-id="${doc.id}">
                         <td class="user-image${doc.id}"><img width="50" height="50" src="${doc.data().imageUrl}" /></td>

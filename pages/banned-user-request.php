@@ -31,14 +31,14 @@
             let bannedText;
             let banElement;
             // Loading all data
-            database.collection('users').where('isReport', '==', 5).onSnapshot(snapshot => {
+            database.collection('users').where('isReport', '>=', 5).onSnapshot(snapshot => {
                 let changes = snapshot.docChanges();
                 console.log(snapshot);
                 changes.forEach(change => {
                     
                     if (change.type == "added") {
                         
-                        if(change.doc.data().isReport == 5 && !change.doc.data().isBanned){
+                        if(change.doc.data().isReport >= 5 && !change.doc.data().isBanned){
                             console.log(change.doc.data());
                             if (!change.doc.data().isBanned) {
                                 bannedText = 'Not Banned';          
@@ -54,7 +54,7 @@
                             if(change.doc.data().isBanned){
                                 let tr = userTable.querySelector('[data-id=' + change.doc.id + ']');
                                 userTable.removeChild(tr);
-                            }else if(change.doc.data().isReport == 5 && !change.doc.data().isBanned){
+                            }else if(change.doc.data().isReport >= 5 && !change.doc.data().isBanned){
                                 if (!change.doc.data().isBanned) {
                                     bannedText = 'Not Banned';          
                                 }

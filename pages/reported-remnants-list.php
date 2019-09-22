@@ -24,7 +24,7 @@
         <?php include '../components/footer.html'; ?>
 
         <script type="text/javascript">
-            const userTable = document.querySelector('#tbody-users');
+            const userTable = document.querySelector('#tbody-reports-remnants');
             const addForm = document.querySelector('#addUserForm');
             const updateForm = document.querySelector('#updateUserForm');
             let status;
@@ -68,6 +68,7 @@
             // Render data to tr elements
             let renderElement = (doc) => {
                 
+                $(userTable).empty();
                 $(userTable).append(`
                     <tr data-id="${doc.id}">
                         <td class="user-image${doc.id}"><img width="50" height="50" src="${doc.data().imageUrl[0]}" /></td>
